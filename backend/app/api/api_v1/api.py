@@ -1,6 +1,8 @@
 from fastapi import APIRouter
 
-from app.api.api_v1.endpoints import users
+from app.api.api_v1.endpoints import users, rooms, devices
 
 api_router = APIRouter()
 api_router.include_router(users.router, prefix="/users", tags=["users"])
+api_router.include_router(rooms.router, prefix="/rooms", tags=["rooms"])
+api_router.include_router(devices.router, prefix="/devices", tags=["devices"])
