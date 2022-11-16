@@ -3,15 +3,17 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-# Shared properties
-class LightBase(BaseModel):
+# Shared propertie
+class ThermostatBase(BaseModel):
     device_id: int
-    brightness: int
+    humidity: float
+    inside_temperature: float
+    outside_temperature: float
     created: datetime
     name: str
 
 
-class Light(LightBase):
+class Thermostat(ThermostatBase):
     id: int
 
     class Config:

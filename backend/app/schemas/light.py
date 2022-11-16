@@ -6,7 +6,7 @@ from pydantic import BaseModel
 # Shared properties
 class LightBase(BaseModel):
     device_id: int
-    brightness: int
+    brightness: float
     created: datetime
     name: str
 
