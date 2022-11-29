@@ -5,6 +5,8 @@ import time
 import logging,random,os
 import sys,getopt
 import threading
+from app.mqtt.mqtt_db import *
+from datetime import datetime
 
 brokers=["test.mosquitto.org"]
 
@@ -137,6 +139,7 @@ class mqtt_connection:
         if topic==self.topic_control: #got control message
             print("control message ",msg)
             self.update_status(client, msg)
+            # insert_light_value_db(int(mqtt_connection.device_id[self.mqtt_connection_id]),float(msg),str(datetime.now()))
 
     def on_connect(self, client, userdata, flags, rc):
         logging.debug("Connected flags"+str(flags)+"result code "+str(rc)+"client1_id")
@@ -174,6 +177,7 @@ class mqtt_connection:
             client.publish(self.sensor_status_topic,client.sensor_status,0,True)
             print("publish on",self.sensor_status_topic,\
                   " message  ",client.sensor_status)
+            insert_light_value_db(int(mqtt_connection.device_id[self.mqtt_connection_id]),float(client.sensor_status),str(datetime.now()))
             client.last_pub_time=time.time()
             client.sensor_status_old=client.sensor_status
             
