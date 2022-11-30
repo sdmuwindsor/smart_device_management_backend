@@ -58,3 +58,13 @@ def get_room_devices(
 #     db: Session = Depends(deps.get_db),
 #     device_id: int
 # )
+
+@router.get("/get_by_category/")
+def get_room_devices(
+    category_name: str,
+    user_id: int,
+    db: Session = Depends(deps.get_db),
+    # get_current_user: schemas.Device = Depends(deps.get_current_user)
+):
+    print("here")
+    return crud.device.get_by_category(category_name, user_id, db)
