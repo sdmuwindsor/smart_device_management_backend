@@ -38,7 +38,7 @@ class ThermostatSimulation:
         self.df_synthetic_thermostat["Date"] = [current_time + datetime.timedelta(minutes=10*i) for i in range(self.df_thermostat.shape[0])]
         self.df_synthetic_thermostat['DeviceId'] = ["Device"+str(device_id) for i in range(self.df_thermostat.shape[0])] 
         self.store_synthetic_data()
-        self.plot_graph()
+        #self.plot_graph()
     
     def random_timeseries(self,count=3709):
         initial_value = random.random()
