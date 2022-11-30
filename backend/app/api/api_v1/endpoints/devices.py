@@ -50,4 +50,11 @@ def get_room_devices(
     # get_current_user: schemas.Device = Depends(deps.get_current_user)
 ):
     return crud.device.get_by_room_id(db, room_id=room_id)
-    
+
+
+# @router.get("/get_anamoly{device_id}")
+# def send_anamoly_report(
+#     *,
+#     db: Session = Depends(deps.get_db),
+#     device_id: int
+# )

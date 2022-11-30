@@ -18,7 +18,7 @@ def get_by_date(
     # get_current_user: schemas.Device = Depends(deps.get_current_user)
 
 ):
-    lights = crud.light.get_by_dates(
+    lights = crud.thermostat.get_by_dates(
         db,
         start_date=start_date,
         end_date=end_date

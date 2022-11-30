@@ -19,3 +19,16 @@ class Thermostat(ThermostatBase):
     class Config:
         orm_mode = True
 
+
+class ThermostatDate(BaseModel):
+    start_date: datetime
+    end_date: datetime
+
+
+class ThermostatCreate(ThermostatBase):
+    pass
+
+
+class ThermostatUpdate(ThermostatBase):
+    pass
+

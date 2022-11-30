@@ -11,6 +11,19 @@ class LightBase(BaseModel):
     name: str
 
 
+class LightDate(BaseModel):
+    start_date: datetime
+    end_date: datetime
+
+
+class LightCreate(LightBase):
+    pass
+
+
+class LightUpdate(LightBase):
+    pass
+
+
 class Light(LightBase):
     id: int
 
