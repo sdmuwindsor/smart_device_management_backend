@@ -1,10 +1,11 @@
 import random
 import datetime
 import pandas as pd
+import plotly.express as px
 from sqlalchemy import create_engine
 
 class LightSimulation:
-    def __init__(self,table_name='light',username='root',password='root',host='localhost',database='smartdb'):
+    def __init__(self,table_name='light',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
         self.table_name = table_name
         self.engine = create_engine("mysql://{0}:{1}@{2}/{3}".format(username,password,host,database))
         self.conn = self.engine.connect()
@@ -27,6 +28,7 @@ class LightSimulation:
         self.df_synthetic_brightness["Date"] = [current_time + datetime.timedelta(minutes=10*i) for i in range(self.df_brightness.shape[0])]
         self.df_synthetic_brightness['DeviceId'] = ["Device"+str(device_id) for i in range(self.df_brightness.shape[0])] 
         self.store_synthetic_data()
+        #self.plot_graph()
     
     def random_timeseries(self,count=11037):
         initial_value = random.random()
@@ -36,6 +38,11 @@ class LightSimulation:
             self.time_series.append(self.time_series[-1] + initial_value * random.gauss(0, 1) * volatility)
     
     def store_synthetic_data(self):
-        #self.df_synthetic_path = "Lightt "+ str(self.device_id) + ".xlsx"
-        #self.df_synthetic_brightness.to_excel(self.df_synthetic_path,index=False)
         self.df_synthetic_brightness.to_sql(self.table_name, self.engine, if_exists='append',index=False)
+        
+    
+    def plot_graph(self):
+        self.df_synthetic_brightness.drop(columns=['DeviceId'],inplace=True)
+        for df in [self.df_brightness,self.df_synthetic_brightness]:
+            fig = px.line(df, x="Date", y=df.columns)
+            fig.show()
