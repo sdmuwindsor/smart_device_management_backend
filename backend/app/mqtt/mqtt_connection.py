@@ -35,11 +35,11 @@ class mqtt_connection:
         options["sensor_type"]=sensorType
         options["topic_base"]="sensors"
         options["interval"]=2 #loop time when sensor publishes in verbose
-        options["interval_pub"]=60 # in non chatty mode publish
+        options["interval_pub"]=600 # in non chatty mode publish
         options["keepalive"]=120
         options["loglevel"]=logging.ERROR
         options["mqttclient_log"] = False
-        options["sensor_pub_interval"] = 60
+        options["sensor_pub_interval"] = 600
         options["QOS0"]=0
 
         self.connected_topic = options["sensor_type"]+"/connected/"+options["cname"]

@@ -9,7 +9,7 @@ class DeviceBase(BaseModel):
     room_id: int
     name: str
     category: Category 
-
+    power_rating: float
 
 
 # Properties to receive via API on creation
