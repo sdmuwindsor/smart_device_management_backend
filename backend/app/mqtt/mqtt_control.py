@@ -61,4 +61,3 @@ class mqtt_control:
                     tmp.append(j.get_state())
                 return tmp
         return []
-
