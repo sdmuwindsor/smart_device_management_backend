@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
-from app.models import Devices
+from app.models import Devices, Rooms
 from app.schemas.device import Device, DeviceBase, DeviceCreate, DeviceUpdate
 from app.mqtt.mqtt_control import mqtt_control
 
@@ -38,5 +38,13 @@ class CRUDDevice(CRUDBase[Devices, DeviceCreate, DeviceUpdate]):
 
         return db_device
 
+    def get_by_category(self, category_name, user_id, db:Session):
+        return db.query(Devices).join(
+            Rooms,
+            Rooms.id == Devices.room_id
+        ).filter(
+            Rooms.user_id == user_id,
+            Devices.category == category_name
+        ).all()
 
 device = CRUDDevice(Devices)
