@@ -20,7 +20,7 @@ class CRUDDevice(CRUDBase[Devices, DeviceCreate, DeviceUpdate]):
     
     def get(self, db: Session, *, id: int, start_date: datetime, end_date: datetime) -> Optional[Devices]:
         device_details = db.query(Devices).filter(Devices.id == id).first()
-        print(device_details.__dict__['category'].value,device_details.__dict__)
+        # print(device_details.__dict__['category'].value,device_details.__dict__)
         if device_details.__dict__['category'].value == 'Light':
             brightness = crud.light.get_brightness_by_dates(db, start_date=start_date, end_date=end_date, device_id=id)
             power = crud.light.get_power_consumption_by_dates(db, start_date=start_date, end_date=end_date, device_id=id)

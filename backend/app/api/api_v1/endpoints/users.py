@@ -59,7 +59,6 @@ def get_power_consumption_by_date(
     start_date: datetime,
     end_date: datetime,
     user_id: int,
-    category: str = None
     # get_current_user: schemas.Device = Depends(deps.get_current_user)
 
 ):
@@ -68,7 +67,24 @@ def get_power_consumption_by_date(
         start_date=start_date,
         end_date=end_date,
         user_id=user_id,
-        category=category
+    )
+    return power
+
+@router.get("/get_power_consumption_by_category")
+def get_power_consumption_by_category(
+    *,
+    db: Session = Depends(deps.get_db),
+    start_date: datetime,
+    end_date: datetime,
+    user_id: int,
+    # get_current_user: schemas.Device = Depends(deps.get_current_user)
+
+):
+    power = crud.user.get_power_consumption_by_category(
+        db,
+        start_date=start_date,
+        end_date=end_date,
+        user_id=user_id,
     )
     return power
 
