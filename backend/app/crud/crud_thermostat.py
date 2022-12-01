@@ -40,7 +40,7 @@ class CRUDThermostat(CRUDBase[Thermostats, ThermostatCreate, ThermostatUpdate]):
         df.rename(columns={'inside_temperature':'power_consumption'},inplace=True)
         df['power_consumption'] = df['power_consumption'].apply(lambda x: x*24/150)
         power_data = db.query(Devices.power_rating).filter(Devices.id==device_id).first()
-        df['power_consumption'] = df['power_consumption']*(power_data['power_rating']+power_data['power_rating']*random.uniform(-0.1,0.1))
+        df['power_consumption'] = df['power_consumption']*(power_data[0]+power_data[0]*random.uniform(-0.1,0.1))
         return df.to_dict('records')
 
 thermostat = CRUDThermostat(Thermostats)
