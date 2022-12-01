@@ -44,7 +44,7 @@ class CRUDDevice(CRUDBase[Devices, DeviceCreate, DeviceUpdate]):
         db.commit()
         db.refresh(db_obj)
         mqtt_control.add_a_device(str(db_obj.id),db_obj.category.value)
-        light_sim_obj.generate_synthetic_data(db_obj.id)
+        # light_sim_obj.generate_synthetic_data(db_obj.id)
         return db_obj
 
     def update(self, db: Session, *, obj_in: DeviceCreate, id: int) -> Devices:

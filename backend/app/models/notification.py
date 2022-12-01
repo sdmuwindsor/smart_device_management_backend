@@ -8,7 +8,7 @@ from app.db.base_class import Base
 class Notifications(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    message = Column(String(50), index=True)
-    title = Column(String(50), index=True)
+    message = Column(String(3072), index=True)
+    title = Column(String(500), index=True)
     
     user_notification  = relationship('Users')

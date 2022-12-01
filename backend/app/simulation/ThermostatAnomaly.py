@@ -11,16 +11,23 @@ import plotly.graph_objects as go
 from adtk.detector import QuantileAD
 from sqlalchemy import create_engine
 from plotly.subplots import make_subplots
+import sys
+import os
+
+#sys.path.append(f"{os.getcwd()}"+"/app")
+#print(sys.path)
+#from app.db.session import engine
 
 class ThermostatAnomalyDetection:
-     def __init__(self,table_name='thermostats',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
+     def __init__(self,engine,table_name='thermostats',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
         self.table_name = table_name
-        self.engine = create_engine("mysql://{0}:{1}@{2}/{3}".format(username,password,host,database))
+        #self.engine = create_engine("mysql://{0}:{1}@{2}/{3}".format(username,password,host,database))
+        self.engine = engine
         self.conn = self.engine.connect()
     
-     def detect_anomaly(self,device_id,html_file_path='Thermostat_Report.html'):
+     def detect_anomaly(self,device_id,start_time,end_time,html_file_path='Thermostat_Report.html'):
         current_time = datetime.now()
-        self.device_df = pd.read_sql("SELECT * FROM {0} WHERE deviceid='{1}' and date <='{2}'".format(self.table_name,device_id,current_time), self.conn)
+        self.device_df = pd.read_sql("SELECT * FROM {0} WHERE device_id='{1}' and created>={2} and created <='{3}'".format(self.table_name,device_id,start_time,end_time), self.conn)
         self.device_df.rename(columns={'humidity':'Relative_Humidity_Percentage',
                                        'inside_temperature':'Indoor_Temperature_C',
                                        'outside_temperature':'Outdoor_Temperature_C',
