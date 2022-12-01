@@ -10,6 +10,7 @@ from app.schemas.thermostat import Thermostat, ThermostatBase, ThermostatCreate,
 class CRUDThermostat(CRUDBase[Thermostats, ThermostatCreate, ThermostatUpdate]):
     def get_temperature_by_dates(self, db: Session, *, start_date: datetime, end_date: datetime, device_id: int, type: str) -> Optional[Thermostats]:
         data =  db.query(Thermostats).filter(Thermostats.created.between(start_date, end_date),Thermostats.device_id==device_id).all()
+        data = [i.__dict__ for i in data]
         df = pd.DataFrame.from_records(data)
         if 'inside' in type:
             df = df[['created','inside_temperature']]
@@ -23,6 +24,7 @@ class CRUDThermostat(CRUDBase[Thermostats, ThermostatCreate, ThermostatUpdate]):
 
     def get_humidity_by_dates(self, db: Session, *, start_date: datetime, end_date: datetime, device_id: int) -> Optional[Thermostats]:
         data =  db.query(Thermostats).filter(Thermostats.created.between(start_date, end_date),Thermostats.device_id==device_id).all()
+        data = [i.__dict__ for i in data]
         df = pd.DataFrame.from_records(data)
         df = df[['created','humidity']]
         df['created'] = df['created'].apply(lambda x: str(x).split(' ')[0])
@@ -31,6 +33,7 @@ class CRUDThermostat(CRUDBase[Thermostats, ThermostatCreate, ThermostatUpdate]):
 
     def get_power_consumption_by_dates(self, db: Session, *, start_date: datetime, end_date: datetime, device_id: int) -> Optional[Thermostats]:
         data = db.query(Thermostats).filter(Thermostats.created.between(start_date, end_date),Thermostats.device_id==device_id).all()
+        data = [i.__dict__ for i in data]
         df = pd.DataFrame.from_records(data)
         df = df[['created','inside_temperature']]
         df = df.groupby('created').agg({'inside_temperature':'count'}).reset_index()

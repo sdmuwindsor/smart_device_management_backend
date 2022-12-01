@@ -3,6 +3,7 @@ from typing import Any, Dict, Optional
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
+from app.crud import light, thermostat
 from app.models import Devices, Rooms
 from app.schemas.device import Device, DeviceBase, DeviceCreate, DeviceUpdate
 from app.mqtt.mqtt_control import mqtt_control
@@ -11,8 +12,20 @@ class CRUDDevice(CRUDBase[Devices, DeviceCreate, DeviceUpdate]):
     def get_by_room_id(self, db: Session, *, room_id: int) -> Optional[Devices]:
         return db.query(Devices).filter(Devices.room_id == room_id).all()
     
-    def get(self, db: Session, *, id: int) -> Optional[Devices]:
-        return db.query(Devices).filter(Devices.id == id).first()
+    def get(self, db: Session, *, id: int, start_date: datetime, end_date: datetime) -> Optional[Devices]:
+        device_details = db.query(Devices).filter(Devices.id == id).first()
+        print(device_details['category'],device_details)
+        if device_details['category'] == 'light':
+            brightness = light.get_brightness_by_dates(db, start_date=start_date, end_date=end_date, device_id=device_id)
+            power = light.get_power_consumption_by_dates(db, start_date=start_date, end_date=end_date, device_id=device_id)
+            out = {'details':device_details,'brightness':brightness,'power_consumption':power}
+        elif device_details['category'] == 'thermostat':
+            inside_temperature = thermostat.get_temperature_by_dates(db, start_date=start_date, end_date=end_date, device_id=device_id, type="inside")
+            ouside_temperature = thermostat.get_temperature_by_dates(db, start_date=start_date, end_date=end_date, device_id=device_id, type="outside")
+            humidity = light.get_humidity_by_dates(db, start_date=start_date, end_date=end_date, device_id=device_id)
+            power = light.get_power_consumption_by_dates(db, start_date=start_date, end_date=end_date, device_id=device_id)
+            out = {'details':device_details,'inside_temperature':inside_temperature,"ouside_temperature":ouside_temperature,"humidity":humidity,'power_consumption':power}
+        return out
 
     def create(self, db: Session, *, obj_in: DeviceCreate) -> Devices:
         db_obj = Devices(

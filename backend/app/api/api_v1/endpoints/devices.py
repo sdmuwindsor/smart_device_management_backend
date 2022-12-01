@@ -38,9 +38,11 @@ def update(
 def get(
     id: int,
     db: Session = Depends(deps.get_db),
+    start_date: datetime,
+    end_date: datetime,
     # get_current_user: schemas.Device = Depends(deps.get_current_user)
 ):
-    return crud.device.get(db, id=id)
+    return crud.device.get(db, id=id, start_date=start_date, end_date=end_date)
 
 
 @router.get("/get_room_devices/{room_id}")
