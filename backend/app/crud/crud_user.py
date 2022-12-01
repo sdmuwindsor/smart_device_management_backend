@@ -56,6 +56,8 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
                 power = crud.thermostat.get_power_consumption_by_dates(db, start_date=start_date, end_date=end_date, device_id=i.__dict__['id'])
             df = pd.DataFrame.from_records(power)
             final_df = pd.concat([final_df,df],ignore_index=True)
+        if len(final_df) < 1:
+            return {}
         final_df = final_df.groupby('date').agg({'power_consumption':'sum'}).reset_index()
         return final_df.to_dict('records')
 
