@@ -6,7 +6,7 @@ from app.core.security import get_password_hash, verify_password
 from app.crud.base import CRUDBase
 from app.models.user import Users
 from app.schemas.user import UserCreate, UserUpdate
-from app.utils.mail import send_mails
+from app.utils.mail import SendReport
 
 class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
     def get_by_email(self, db: Session, *, email: str) -> Optional[Users]:
@@ -22,7 +22,7 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
-        send_mails.send_confirmation_mail(obj_in.first_name,obj_in.email)
+        SendReport.send_confirmation_mail(obj_in.first_name,obj_in.email)
         return db_obj
 
     def authenticate(

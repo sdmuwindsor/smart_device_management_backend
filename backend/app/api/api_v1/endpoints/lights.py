@@ -22,7 +22,7 @@ def get_brightness_by_date(
     # get_current_user: schemas.Device = Depends(deps.get_current_user)
 
 ):
-    lights = crud.light.get_by_dates(
+    lights = crud.light.get_brightness_by_dates(
         db,
         start_date=start_date,
         end_date=end_date,
@@ -41,7 +41,7 @@ def get_power_consumption_by_date(
     # get_current_user: schemas.Device = Depends(deps.get_current_user)
 
 ):
-    lights = crud.light.get_by_dates(
+    lights = crud.light.get_power_consumption_by_dates(
         db,
         start_date=start_date,
         end_date=end_date,
