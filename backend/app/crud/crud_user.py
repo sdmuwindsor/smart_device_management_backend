@@ -62,7 +62,7 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
         return final_df.to_dict('records')
 
 
-    def get_power_consumption_by_dates(self, db: Session, *, start_date: datetime, end_date: datetime, user_id: int) -> Optional[Users]:
+    def get_power_consumption_by_category(self, db: Session, *, start_date: datetime, end_date: datetime, user_id: int) -> Optional[Users]:
         device = db.query(Devices).join(
             Rooms,
             Rooms.id == Devices.room_id
