@@ -7,11 +7,18 @@ from app.models import Devices, Rooms
 from app.schemas.device import Device, DeviceBase, DeviceCreate, DeviceUpdate
 from app.mqtt.mqtt_control import mqtt_control
 
+
+from app.simulation import LightSim, ThermostatSim
+light_sim_obj = LightSim.LightSimulation()
+themostat_sim_obj = ThermostatSim.ThermostatSimulation()
+
+
 class CRUDDevice(CRUDBase[Devices, DeviceCreate, DeviceUpdate]):
     def get_by_room_id(self, db: Session, *, room_id: int) -> Optional[Devices]:
         return db.query(Devices).filter(Devices.room_id == room_id).all()
     
     def get(self, db: Session, *, id: int) -> Optional[Devices]:
+        # print(os.listdir())
         return db.query(Devices).filter(Devices.id == id).first()
 
     def create(self, db: Session, *, obj_in: DeviceCreate) -> Devices:
@@ -24,7 +31,8 @@ class CRUDDevice(CRUDBase[Devices, DeviceCreate, DeviceUpdate]):
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
-        mqtt_control.add_a_device(str(db_obj.id),db_obj.category)
+        mqtt_control.add_a_device(str(db_obj.id),db_obj.category.value)
+        light_sim_obj.generate_synthetic_data(db_obj.id)
         return db_obj
 
     def update(self, db: Session, *, obj_in: DeviceCreate, id: int) -> Devices:

@@ -6,20 +6,24 @@ import plotly
 import pandas as pd
 import plotly.io as pio
 from datetime import datetime
+from pyhtml2pdf import converter
 import plotly.graph_objects as go
 from adtk.detector import QuantileAD
 from sqlalchemy import create_engine
 from plotly.subplots import make_subplots
 
 class LightAnomalyDetection:
-     def __init__(self,table_name='light',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
+    def __init__(self,table_name='lights',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
         self.table_name = table_name
         self.engine = create_engine("mysql://{0}:{1}@{2}/{3}".format(username,password,host,database))
         self.conn = self.engine.connect()
     
     def detect_anomaly(self,device_id,html_file_path='Light_Report.html'):
         current_time = datetime.now()
-        self.device_df = pd.read_sql("SELECT * FROM {0} WHERE DeviceId='{1}' and Date <='{2}'".format(self.table_name,device_id,current_time), self.conn)
+        self.device_df = pd.read_sql("SELECT * FROM {0} WHERE device_id='{1}' and created <='{2}'".format(self.table_name,device_id,current_time), self.conn)
+        self.start_time = self.device_df['created'][0]
+        self.end_time = current_time
+        self.device_df.rename(columns={'brightness':'Brightness','created':'Date','device_id':'DeviceId'},inplace=True)
         temp_df = copy.deepcopy(self.device_df)
         temp_df.set_index('Date',inplace=True)
         quantile_ad = QuantileAD(high=0.99, low=0.01)

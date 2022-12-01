@@ -6,14 +6,15 @@ class mqtt_control:
 
     @staticmethod
     def add_a_device(device_id, device_type, binaryControl=False):
-        if device_type=="light":
+        # print(device_type)
+        if device_type=="Light":
             if binaryControl:
                 states = ["0","1"]
             else:
                 states = list(str(i) for i in range(101))
             tmp = mqtt_connection(device_id,device_type,states)
             j = {"device_id":device_id,"device_type":device_type,"sensor_states":[states],"mqttConnection":[tmp]}
-        elif device_type=="thermostat":
+        elif device_type=="Thermostat":
             temp_states = list(str(i) for i in range(50,101,1))
             tmp = mqtt_connection(device_id,"temperature",states)
             humidity_states = list(str(i) for i in range(10,81,1))

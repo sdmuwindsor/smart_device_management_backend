@@ -13,7 +13,7 @@ from sqlalchemy import create_engine
 from plotly.subplots import make_subplots
 
 class ThermostatAnomalyDetection:
-     def __init__(self,table_name='thermostat',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
+     def __init__(self,table_name='thermostats',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
         self.table_name = table_name
         self.engine = create_engine("mysql://{0}:{1}@{2}/{3}".format(username,password,host,database))
         self.conn = self.engine.connect()
@@ -22,10 +22,10 @@ class ThermostatAnomalyDetection:
         current_time = datetime.now()
         self.device_df = pd.read_sql("SELECT * FROM {0} WHERE deviceid='{1}' and date <='{2}'".format(self.table_name,device_id,current_time), self.conn)
         self.device_df.rename(columns={'humidity':'Relative_Humidity_Percentage',
-                                       'indoortemperature':'Indoor_Temperature_C',
-                                       'outdoortemperature':'Outdoor_Temperature_C',
-                                       'date':'Date',
-                                       'deviceid':'DeviceId'},inplace=True)
+                                       'inside_temperature':'Indoor_Temperature_C',
+                                       'outside_temperature':'Outdoor_Temperature_C',
+                                       'created':'Date',
+                                       'device_id':'DeviceId'},inplace=True)
         temp_df = copy.deepcopy(self.device_df)
         temp_df.set_index('Date',inplace=True)
         quantile_ad = QuantileAD(high=0.99, low=0.01)

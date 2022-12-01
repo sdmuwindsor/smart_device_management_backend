@@ -3,13 +3,16 @@ import datetime
 import pandas as pd
 import plotly.express as px
 from sqlalchemy import create_engine
+import os
+from app.db.session import engine
 
 class ThermostatSimulation:
-    def __init__(self,table_name='thermostat',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
+    def __init__(self,table_name='thermostats',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
         self.table_name = table_name
-        self.engine = create_engine("mysql://{0}:{1}@{2}/{3}".format(username,password,host,database))
-        self.conn = self.engine.connect()
-        self.df_thermostat_path = "./Historical_IoT_Data/Room1_Thermostat.csv"
+        # self.engine = create_engine("mysql://{0}:{1}@{2}/{3}".format(username,password,host,database))
+        self.engine = engine
+        self.conn = engine.connect()
+        self.df_thermostat_path = os.getcwd() +  "/app/simulation/Historical_IoT_Data/Room1_Thermostat.csv"
         self.get_historical_data()
     
     def get_historical_data(self):
@@ -49,10 +52,10 @@ class ThermostatSimulation:
     
     def store_synthetic_data(self):
         self.df_synthetic_thermostat.rename(columns={'Relative_Humidity_Percentage':'humidity',
-                                                     'Indoor_Temperature_C':'indoortemperature',
-                                                     'Outdoor_Temperature_C':'outdoortemperature',
-                                                     'Date':'date',
-                                                     'DeviceId':'deviceid'},inplace=True)
+                                                     'Indoor_Temperature_C':'inside_temperature',
+                                                     'Outdoor_Temperature_C':'outside_temperature',
+                                                     'Date':'created',
+                                                     'DeviceId':'device_id'},inplace=True)
         self.df_synthetic_thermostat.to_sql(self.table_name, self.engine, if_exists='append',index=False)
         
     

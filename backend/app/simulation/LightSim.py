@@ -2,14 +2,19 @@ import random
 import datetime
 import pandas as pd
 import plotly.express as px
-from sqlalchemy import create_engine
+import os
+# from sqlalchemy import create_engine
+from app.db.session import engine
+
 
 class LightSimulation:
-    def __init__(self,table_name='light',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
+    def __init__(self,table_name='lights',username='usr',password='Sdm!4321',host='sdm.mysql.database.azure.com',database='sdm'):
         self.table_name = table_name
-        self.engine = create_engine("mysql://{0}:{1}@{2}/{3}".format(username,password,host,database))
-        self.conn = self.engine.connect()
-        self.df_brightness_path = "./Historical_IoT_Data/Room1_Brightness.csv"
+        # self.engine = create_engine("mysql://{0}:{1}@{2}/{3}".format(username,password,host,database))
+        self.engine = engine
+        self.conn = engine.connect()
+
+        self.df_brightness_path = os.getcwd() + "/app/simulation/Historical_IoT_Data/Room1_Brightness.csv"
         self.get_historical_data()
     
     def get_historical_data(self):
@@ -26,7 +31,7 @@ class LightSimulation:
         self.df_synthetic_brightness["Brightness"] = abs(self.df_synthetic_brightness["Brightness"])
         current_time = datetime.datetime.now()
         self.df_synthetic_brightness["Date"] = [current_time + datetime.timedelta(minutes=10*i) for i in range(self.df_brightness.shape[0])]
-        self.df_synthetic_brightness['DeviceId'] = ["Device"+str(device_id) for i in range(self.df_brightness.shape[0])] 
+        self.df_synthetic_brightness['DeviceId'] = [device_id for i in range(self.df_brightness.shape[0])] 
         self.store_synthetic_data()
         #self.plot_graph()
     
@@ -38,7 +43,9 @@ class LightSimulation:
             self.time_series.append(self.time_series[-1] + initial_value * random.gauss(0, 1) * volatility)
     
     def store_synthetic_data(self):
+        self.df_synthetic_brightness.rename(columns={'Brightness':'brightness','Date':'created','DeviceId':'device_id'},inplace=True)
         self.df_synthetic_brightness.to_sql(self.table_name, self.engine, if_exists='append',index=False)
+        print("Inserted.....")
         
     
     def plot_graph(self):

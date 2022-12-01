@@ -5,3 +5,4 @@ from .room import Rooms
 from .device import Devices
 from .light import Lights
 from .thermostat import Thermostats
+from .notification import Notifications

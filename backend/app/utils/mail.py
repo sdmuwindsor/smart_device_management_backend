@@ -1,6 +1,7 @@
 from redmail import outlook
 import datetime
-class SendReport:
+from pathlib import Path
+class send_mails():
     def send_confirmation_mail(name, to_email):
         outlook.username = "sdm.mac.2022@outlook.com"
         outlook.password = "kYDLu6bs2Wz3jcG"
