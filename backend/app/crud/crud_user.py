@@ -41,13 +41,22 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
             return None
         return user
 
-    def get_power_consumption_by_dates(self, db: Session, *, start_date: datetime, end_date: datetime, user_id: int) -> Optional[Users]:
-        device = db.query(Devices).join(
-            Rooms,
-            Rooms.id == Devices.room_id
-        ).filter(
-            Rooms.user_id == user_id,
-        ).all()
+    def get_power_consumption_by_dates(self, db: Session, *, start_date: datetime, end_date: datetime, user_id: int, category: str) -> Optional[Users]:
+        if category is None:
+            device = db.query(Devices).join(
+                Rooms,
+                Rooms.id == Devices.room_id
+            ).filter(
+                Rooms.user_id == user_id,
+            ).all()
+        else:
+            device = db.query(Devices).join(
+                Rooms,
+                Rooms.id == Devices.room_id
+            ).filter(
+                Devices.category == category,
+                Rooms.user_id == user_id
+            ).all()
         final_df = pd.DataFrame()
         for i in device:
             if i.__dict__['category'].value =='Light':

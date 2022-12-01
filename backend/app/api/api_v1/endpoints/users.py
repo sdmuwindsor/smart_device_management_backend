@@ -58,7 +58,8 @@ def get_power_consumption_by_date(
     db: Session = Depends(deps.get_db),
     start_date: datetime,
     end_date: datetime,
-    user_id: int
+    user_id: int,
+    category: str = None
     # get_current_user: schemas.Device = Depends(deps.get_current_user)
 
 ):
@@ -66,7 +67,8 @@ def get_power_consumption_by_date(
         db,
         start_date=start_date,
         end_date=end_date,
-        user_id=user_id
+        user_id=user_id,
+        category=category
     )
     return power
 
