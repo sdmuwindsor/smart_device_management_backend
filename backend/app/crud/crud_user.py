@@ -52,13 +52,43 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
         for i in device:
             if i.__dict__['category'].value =='Light':
                 power = crud.light.get_power_consumption_by_dates(db, start_date=start_date, end_date=end_date, device_id=i.__dict__['id'])
-            else :
+            else:
                 power = crud.thermostat.get_power_consumption_by_dates(db, start_date=start_date, end_date=end_date, device_id=i.__dict__['id'])
             df = pd.DataFrame.from_records(power)
             final_df = pd.concat([final_df,df],ignore_index=True)
+        if len(final_df) < 1:
+            return {}
         final_df = final_df.groupby('date').agg({'power_consumption':'sum'}).reset_index()
         return final_df.to_dict('records')
 
+
+    def get_power_consumption_by_category(self, db: Session, *, start_date: datetime, end_date: datetime, user_id: int) -> Optional[Users]:
+        device = db.query(Devices).join(
+            Rooms,
+            Rooms.id == Devices.room_id
+        ).filter(
+            Rooms.user_id == user_id
+        ).all()
+        final_df = pd.DataFrame()
+        final_df1 = pd.DataFrame()
+        for i in device:
+            if i.__dict__['category'].value =='Light':
+                power = crud.light.get_power_consumption_by_dates(db, start_date=start_date, end_date=end_date, device_id=i.__dict__['id'])
+                df = pd.DataFrame.from_records(power)
+                final_df = pd.concat([final_df,df],ignore_index=True)
+            else:
+                power = crud.thermostat.get_power_consumption_by_dates(db, start_date=start_date, end_date=end_date, device_id=i.__dict__['id'])
+                df = pd.DataFrame.from_records(power)
+                final_df1 = pd.concat([final_df1,df],ignore_index=True)
+        if len(final_df) < 1:
+            light = 0
+        else:
+            light = final_df['power_consumption'].sum()
+        if len(final_df1) < 1:
+            thermostat = 0
+        else:
+            thermostat = final_df1['power_consumption'].sum()
+        return {'light':light,'thermostat':thermostat}
 
 user = CRUDUser(Users)
 

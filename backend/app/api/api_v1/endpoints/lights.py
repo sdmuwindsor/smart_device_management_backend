@@ -28,7 +28,6 @@ def get_brightness_by_date(
         end_date=end_date,
         device_id=device_id
     )
-    print(lights)
     return lights
 
 @router.get("/get_power_consumption_by_date")
@@ -41,14 +40,13 @@ def get_power_consumption_by_date(
     # get_current_user: schemas.Device = Depends(deps.get_current_user)
 
 ):
-    lights = crud.light.get_power_consumption_by_dates(
+    power = crud.light.get_power_consumption_by_dates(
         db,
         start_date=start_date,
         end_date=end_date,
         device_id=device_id
     )
-    print(lights)
-    return lights
+    return power
 
 
 @router.get("/get_anamoly")
