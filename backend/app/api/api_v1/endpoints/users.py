@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from pydantic.networks import EmailStr
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
-
+from datetime import datetime
 from app import crud, models, schemas
 from app.api import deps
 from app.core.config import settings
@@ -51,6 +51,24 @@ def login_access_token(
         "token_type": "bearer",
     }
     return {**user.__dict__, **access_token}
+
+@router.get("/get_power_consumption_by_date")
+def get_power_consumption_by_date(
+    *,
+    db: Session = Depends(deps.get_db),
+    start_date: datetime,
+    end_date: datetime,
+    user_id: int
+    # get_current_user: schemas.Device = Depends(deps.get_current_user)
+
+):
+    power = crud.user.get_power_consumption_by_dates(
+        db,
+        start_date=start_date,
+        end_date=end_date,
+        user_id=user_id
+    )
+    return power
 
 
 # @router.get("/test_login")
