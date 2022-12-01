@@ -28,10 +28,8 @@ class CRUDLight(CRUDBase[Lights, LightCreate, LightUpdate]):
         df['brightness'] = df['brightness'].apply(lambda x: 1 if x>0 else 0)
         df['next_time'] = df['created'].shift(-1)
         df['power_consumption'] = abs(df.next_time - df['created']) / pd.Timedelta(hours=1)
-        print(df)
         df = df[df['brightness']==1]
         df = df.groupby("date").agg({'power_consumption':'sum'}).reset_index()
-        print(df)
         power_data = db.query(Devices.power_rating).filter(Devices.id==device_id).first()
         df['power_consumption'] = df['power_consumption']*(power_data[0]+power_data[0]*random.uniform(-0.1,0.1))
         return df.to_dict('records')

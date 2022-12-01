@@ -68,8 +68,7 @@ def get_power_consumption_by_date(
         end_date=end_date,
         user_id=user_id
     )
-    print(lights)
-    return lights
+    return power
 
 
 # @router.get("/test_login")
