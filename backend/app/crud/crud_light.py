@@ -23,6 +23,8 @@ class CRUDLight(CRUDBase[Lights, LightCreate, LightUpdate]):
         data = db.query(Lights).filter(Lights.created.between(start_date, end_date),Lights.device_id==device_id).all()
         data = [i.__dict__ for i in data]
         df = pd.DataFrame.from_records(data)
+        if len(df)<1:
+            return {}
         df = df.sort_values(by='created', ascending=False).reset_index(drop=True)
         df['date'] = df['created'].apply(lambda x: str(x).split(' ')[0])
         df['brightness'] = df['brightness'].apply(lambda x: 1 if x>0 else 0)

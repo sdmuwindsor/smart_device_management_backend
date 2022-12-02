@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app import crud, schemas, models
 from app.api import deps
 from app.simulation import LightAnomaly
-light_anamoly_obj = LightAnomaly.LightAnomalyDetection()
+#light_anamoly_obj = LightAnomaly.LightAnomalyDetection()
 from app.utils.mail import send_mails
 
 router = APIRouter()
@@ -48,7 +48,7 @@ def get_power_consumption_by_date(
     )
     return power
 
-
+'''
 @router.get("/get_anamoly")
 def get_anamoly(
     *,
@@ -61,3 +61,4 @@ def get_anamoly(
     )
     print(details)
     # send_mails.send_report(details[0], details[1], light_anamoly_obj.pdf_file_path, details[2], details[3])
+'''
